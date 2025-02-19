@@ -14,11 +14,15 @@ struct Currency {
 async fn main() {
     let currency_options: HashMap<String, String> = serde_json::from_str(reqwest::get("https://api.frankfurter.dev/v1/currencies").await.unwrap().text().await.unwrap().as_str()).unwrap();
 
-    println!("----- CURRENCIES -----");
-    for (symbol, mut name) in currency_options {
-        name = name.to_uppercase();
-        println!("{} : {}", symbol, name);
-    }
+    list_currencies(&currency_options);
 
     //let currency: Currency = serde_json::from_str(reqwest::get("https://api.frankfurter.dev/v1/latest").await.unwrap().text().await.unwrap().as_str()).unwrap();
+}
+
+fn list_currencies(currencies: &HashMap<String, String>) {
+    println!("----- CURRENCIES -----");
+    for (symbol, name) in currencies {
+        let name = name.to_uppercase();
+        println!("{} : {}", symbol, name);
+    }
 }
