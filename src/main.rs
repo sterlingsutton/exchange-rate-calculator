@@ -12,11 +12,20 @@ struct Currency {
     rates: HashMap<String, f32>,
 }
 
+struct Exchange {
+    base: String,
+    target: String,
+    amount: f32,
+}
+
 #[tokio::main]
 async fn main() {
-    let currency_options: HashMap<String, String> = serde_json::from_str(reqwest::get("https://api.frankfurter.dev/v1/currencies").await.unwrap().text().await.unwrap().as_str()).unwrap();
+    let currencies: HashMap<String, String> = serde_json::from_str(reqwest::get("https://api.frankfurter.dev/v1/currencies").await.unwrap().text().await.unwrap().as_str()).unwrap();
+    
+    loop {
+        list_currencies(&currencies);
 
-    list_currencies(&currency_options);
+    }
 
     //let currency: Currency = serde_json::from_str(reqwest::get("https://api.frankfurter.dev/v1/latest").await.unwrap().text().await.unwrap().as_str()).unwrap();
 }
@@ -28,4 +37,15 @@ fn list_currencies(currencies: &HashMap<String, String>) {
         println!("{} : {}", symbol, name);
     }
     println!("---- END ----");
+}
+
+fn get_exchange_info() -> Exchange {
+    // Set default exchange values
+    let mut exchange = Exchange {
+        base: "USD".to_owned(),
+        target: "EUR".to_owned(),
+        amount: 10.0,
+    };
+
+    // incomplete
 }
