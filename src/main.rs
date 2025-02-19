@@ -1,3 +1,5 @@
+// Copyright (c) 2025 Sterling Sutton
+
 use std::collections::HashMap;
 use reqwest;
 use serde::{Serialize, Deserialize};
