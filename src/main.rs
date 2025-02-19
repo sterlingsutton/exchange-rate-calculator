@@ -22,9 +22,10 @@ async fn main() {
 }
 
 fn list_currencies(currencies: &HashMap<String, String>) {
-    println!("----- CURRENCIES -----");
+    println!("---- AVAILABLE CURRENCIES ----");
     for (symbol, name) in currencies {
         let name = name.to_uppercase();
         println!("{} : {}", symbol, name);
     }
+    println!("---- END ----");
 }
