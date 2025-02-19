@@ -12,7 +12,11 @@ struct Currency {
 
 #[tokio::main]
 async fn main() {
-    let currency: Currency = serde_json::from_str(reqwest::get("https://api.frankfurter.dev/v1/latest").await.unwrap().text().await.unwrap().as_str()).unwrap();
-    let usd = currency.rates.get("USD").unwrap();
-    println!("{}", usd);
+    let currency_options: HashMap<String, String> = serde_json::from_str(reqwest::get("https://api.frankfurter.dev/v1/currencies").await.unwrap().text().await.unwrap().as_str()).unwrap();
+
+    for (symbol, name) in currency_options {
+        println!("{} : {}", symbol, name);
+    }
+
+    //let currency: Currency = serde_json::from_str(reqwest::get("https://api.frankfurter.dev/v1/latest").await.unwrap().text().await.unwrap().as_str()).unwrap();
 }
