@@ -14,7 +14,9 @@ struct Currency {
 async fn main() {
     let currency_options: HashMap<String, String> = serde_json::from_str(reqwest::get("https://api.frankfurter.dev/v1/currencies").await.unwrap().text().await.unwrap().as_str()).unwrap();
 
-    for (symbol, name) in currency_options {
+    println!("----- CURRENCIES -----");
+    for (symbol, mut name) in currency_options {
+        name = name.to_uppercase();
         println!("{} : {}", symbol, name);
     }
 
