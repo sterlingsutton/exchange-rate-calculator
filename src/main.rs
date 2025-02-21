@@ -2,8 +2,8 @@
 
 use std::collections::HashMap;
 use reqwest;
-use serde::{Deserialize, Serialize};
 use serde_json::{self, Value};
+use text_io::Error;
 
 struct Exchange {
     base: String,
@@ -16,24 +16,20 @@ impl Exchange {
         let url = format!("https://api.frankfurter.dev/v1/latest?base={}", self.base);
 
         let data: Value = serde_json::from_str(reqwest::get(url).await.unwrap().text().await.unwrap().as_str()).unwrap();
-        
-        println!("Value: {}", data);
 
-        0.0
+        let rate = data["rates"][&self.target].as_f64().unwrap() as f32;
+
+        rate * self.amount
     }
 }
 
 #[tokio::main]
 async fn main() {
     let currencies: HashMap<String, String> = serde_json::from_str(reqwest::get("https://api.frankfurter.dev/v1/currencies").await.unwrap().text().await.unwrap().as_str()).unwrap();
-    
-    loop {
-        list_currencies(&currencies);
-        let exchange = get_exchange_info(&currencies);
-        let x = exchange.calculate_target_amount().await;
-        println!("{}", x);
-        break;
-    }
+    list_currencies(&currencies);
+    let exchange = get_exchange_info(&currencies);
+    let target_amount = exchange.calculate_target_amount().await;
+    println!("Target Amount ({}) : {:.2}", exchange.target, target_amount);
 
 }
 
@@ -43,10 +39,12 @@ fn list_currencies(currencies: &HashMap<String, String>) {
         let name = name.to_uppercase();
         println!("{} : {}", symbol, name);
     }
+    println!();
 }
 
 fn get_exchange_info(currencies: &HashMap<String, String>) -> Exchange {
     // Set default exchange values
+    println!("---- EXCHANGE INFO ----");
     let mut exchange = Exchange {
         base: "USD".to_owned(),
         target: "EUR".to_owned(),
@@ -65,19 +63,29 @@ fn get_exchange_info(currencies: &HashMap<String, String>) -> Exchange {
     // get amount
     loop {
         print!("Amount ({}) : ", exchange.base);
-        let amount: f32 = text_io::read!();
+        let amount: Result<f32, Error> = text_io::try_read!();
 
-        if amount > 0.0 {
-            exchange.amount = amount;
-            break;
+        match amount.is_ok() {
+            true => {
+                let amount = amount.unwrap();
+                if amount > 0.0 {
+                    exchange.amount = amount;
+                    break;
+                }
+            }
+            false => {
+                // do nothing
+            }
         }
+
+        
     }
     // get target
     loop {
         print!("Target Currency (default EUR) : ");
         let target: String = text_io::read!();
         // same thing as with the base
-        if currencies.contains_key(&target) {
+        if currencies.contains_key(&target) && !target.eq(&exchange.base) {
             exchange.target = target;
             break;
         }
