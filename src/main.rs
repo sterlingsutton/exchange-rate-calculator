@@ -62,7 +62,7 @@ fn get_exchange_info(currencies: &HashMap<String, String>) -> Exchange {
     }
     // get amount
     loop {
-        print!("Amount ({}) : ", exchange.base);
+        print!("Base Amount ({}) : ", exchange.base);
         let amount: Result<f32, Error> = text_io::try_read!();
 
         match amount.is_ok() {
