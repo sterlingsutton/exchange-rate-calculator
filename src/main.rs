@@ -36,7 +36,7 @@ async fn main() {
 fn list_currencies(currencies: &HashMap<String, String>) {
     println!("---- AVAILABLE CURRENCIES ----");
     for (symbol, name) in currencies {
-        let name = name.to_uppercase();
+        //let name = name.to_uppercase();
         println!("{} : {}", symbol, name);
     }
     println!();
