@@ -21,6 +21,14 @@ impl Exchange {
 
         rate * self.amount
     }
+
+    fn new() -> Self {
+        Self {
+            base: String::new(),
+            target: String::new(),
+            amount: 0.0,
+        }
+    }
 }
 
 #[tokio::main]
@@ -45,14 +53,10 @@ fn list_currencies(currencies: &HashMap<String, String>) {
 fn get_exchange_info(currencies: &HashMap<String, String>) -> Exchange {
     // Set default exchange values
     println!("---- EXCHANGE INFO ----");
-    let mut exchange = Exchange {
-        base: "USD".to_owned(),
-        target: "EUR".to_owned(),
-        amount: 10.0,
-    };
+    let mut exchange = Exchange::new();
     // get base
     loop {
-        print!("Base Currency (default USD) : ");
+        print!("Base Currency : ");
         let base: String = text_io::read!();
         // change base and break from loop if base is valid
         if currencies.contains_key(&base) {
@@ -82,7 +86,7 @@ fn get_exchange_info(currencies: &HashMap<String, String>) -> Exchange {
     }
     // get target
     loop {
-        print!("Target Currency (default EUR) : ");
+        print!("Target Currency : ");
         let target: String = text_io::read!();
         // same thing as with the base
         if currencies.contains_key(&target) && !target.eq(&exchange.base) {
