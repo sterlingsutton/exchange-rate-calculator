@@ -12,7 +12,9 @@ struct Exchange {
 impl Exchange {
     async fn calculate_target_amount(&self) -> f32 {
         let url = format!("https://api.frankfurter.dev/v1/latest?base={}", self.base);
-        let data: Value = serde_json::from_str(reqwest::get(url).await.unwrap().text().await.unwrap().as_str()).unwrap();
+        let data: Value = serde_json::from_str(
+            reqwest::get(url).await.unwrap().text().await.unwrap().as_str()
+        ).unwrap();
         let rate = data["rates"][&self.target].as_f64().unwrap() as f32;
         rate * self.amount
     }
