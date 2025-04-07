@@ -30,7 +30,9 @@ impl Exchange {
 
 #[tokio::main]
 async fn main() {
-    let currencies: HashMap<String, String> = serde_json::from_str(reqwest::get("https://api.frankfurter.dev/v1/currencies").await.unwrap().text().await.unwrap().as_str()).unwrap();
+    let currencies: HashMap<String, String> = 
+        serde_json::from_str(reqwest::get("https://api.frankfurter.dev/v1/currencies")
+        .await.unwrap().text().await.unwrap().as_str()).unwrap();
     list_currencies(&currencies);
     let exchange = get_exchange_info(&currencies);
     let target_amount = exchange.calculate_target_amount().await;
